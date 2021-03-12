@@ -69,14 +69,18 @@ world = {};
 function drawCircle(context,entity) {
     with(context) {
         beginPath();              
-        lineWidth = 3;
+        lineWidth = 1;
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
-        strokeStyle = fillStyle;
+        strokeStyle = "white";
         arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        stroke(); 
+        fill();
+        
+          
+
     }
 }
 
@@ -149,7 +153,7 @@ function addEntity(entity, data) {
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
     url  = `https://${window.location.host}/entity/${entity}`; 
-    sendJSONXMLHTTPRequest(url, data, ()=>null);
+    sendJSONXMLHTTPRequest(url, world[entity] , ()=> {return null});
 }
 
 var counter = 0;
@@ -157,6 +161,7 @@ function addEntityWithoutName(data) {
     //var name = "X"+Math.floor((Math.random()*100)+1);
     var name = "X"+(counter++)%100;
     addEntity(name,data);
+    
 }
 
 // canvas + mouse/touch is complicated 
@@ -258,23 +263,23 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'coral','radius':15});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y,'colour':'green','radius':15});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+    addEntityWithoutName({'x':x,'y':y,'colour':'#F2AA4CFF',
+                          'radius':5});
 });
 
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
     url  = `https://${window.location.host}/world` 
-    sendJSONXMLHTTPRequest(url, null, (data)=>world=data);
+    sendJSONXMLHTTPRequest(url, null, (data)=>{world=data});
     drawNextFrame();
     drawFrame();
 }
